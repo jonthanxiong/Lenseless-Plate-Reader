@@ -1,0 +1,1 @@
+This training set will contain bead images selected based upon adequate clarity, and bead and dust objects.

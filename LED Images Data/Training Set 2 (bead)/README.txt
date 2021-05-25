@@ -1,0 +1,1 @@
+This training set will contain just bead images and bead objects.
