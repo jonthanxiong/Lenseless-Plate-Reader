@@ -2,7 +2,7 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 import os
 
-#Place files to be reformatted in same directory as this python file.
+#Place files to be modified in same directory as this python file.
 
 xml_files = []
 

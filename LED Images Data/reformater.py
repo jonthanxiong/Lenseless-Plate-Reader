@@ -10,6 +10,8 @@ for _,_,files in os.walk("."):
             xml_files.append(file)
     break
 
+if not os.path.exists("reformated"):
+    os.mkdir("reformated")
 for file in xml_files:
     lines = None
     with open(file) as f:
@@ -29,7 +31,11 @@ for file in xml_files:
             if found == 4:
                 f.write(line+"\n")
                 break
-            if found > 0 and found < 4:
+            if found == 3:
+                found+=1
+                print(line.split("3"))
+                f.write(line.split("3")[0]+"1" + line.split("3")[1]+"\n")
+            if found > 0 and found < 3:
                 found+=1
                 f.write(line+"\n")
             if "<size>" in line:
