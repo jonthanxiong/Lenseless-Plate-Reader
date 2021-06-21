@@ -269,8 +269,6 @@ class Image_Processor():
         if image_width >= self._original_image_width - overlap or image_height >= self._original_image_height - overlap:
             raise Exception("Overlap too much to recover original image.")
 
-        print(image_width)
-        print(self._new_image_width + 2 * overlap)
         if image_width != self._new_image_width + 2 * overlap:
             # check if image part is closer to left or right side of whole image
             # left side
@@ -285,8 +283,7 @@ class Image_Processor():
                 xmax = xmin + self._new_image_width
                 if xmax > image_part.size[0]:
                     xmax = image_part.size[0]
-        print(image_height)
-        print(self._new_image_height + 2 * overlap)
+
         if image_height != self._new_image_height + 2 * overlap:
             # check if image part is closer to top or bottom of whole image
             # top side
