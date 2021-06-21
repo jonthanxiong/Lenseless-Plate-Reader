@@ -18,7 +18,7 @@ def get_all_files_from_directory(directory_path, file_type):
 
 # counts number of objects in annotations from a directory
 # annotations need to be in voc format
-def count_annotated_objects(annotations_path, objects_to_count=set()):
+def count_annotated_objects(annotations_path, objects_to_count={"bead"}):
     objects = dict()
     for object in objects_to_count:
         objects[object] = 0
@@ -46,7 +46,7 @@ def reformatter(annotations_path, processed_directory_path='reformatted/'):
     if not os.path.exists(processed_directory_path):
         os.mkdir(processed_directory_path)
 
-    xml_files = get_all_files_from_directory(annotations_path)
+    xml_files = get_all_files_from_directory(annotations_path, ".xml")
 
     for file in xml_files:
         lines = None
@@ -69,7 +69,6 @@ def reformatter(annotations_path, processed_directory_path='reformatted/'):
                     break
                 if found == 3:
                     found += 1
-                    print(line.split("3"))
                     f.write(line.split("3")[0] + "1" + line.split("3")[1] + "\n")
                 if found > 0 and found < 3:
                     found += 1
@@ -95,7 +94,7 @@ def reformatter(annotations_path, processed_directory_path='reformatted/'):
                         f.write(line + "\n")
 
 def compile_annotation_file_names(annotations_path):
-    xml_files = get_all_files_from_directory(annotations_path)
+    xml_files = get_all_files_from_directory(annotations_path, ".xml")
 
     return {file.split('.')[0] for file in xml_files}
 
@@ -115,7 +114,7 @@ def remove_unannotated_images(images_path, existing_annotations, display_message
         print("JPG Files Removed: " + str(removed_count))
 
 # if annoations_path and processed_directory_path are the same, then the original xml files are overwritten
-def annotated_object_remover(annotations_path, processed_directory_path=os.path.join("modified_objects/"), objects_to_remove=set()):
+def annotated_object_remover(annotations_path, processed_directory_path=os.path.join("modified_objects/"), objects_to_remove={"dust"}):
     if not os.path.exists(processed_directory_path):
         os.mkdir(processed_directory_path)
 
@@ -123,7 +122,7 @@ def annotated_object_remover(annotations_path, processed_directory_path=os.path.
 
     for file in xml_files:
         to_remove = []
-        tree = ET.parse(os.join(annotations_path, file))
+        tree = ET.parse(os.path.join(annotations_path, file))
         root = tree.getroot()
         for elem in root:
             if elem.tag == 'object':
@@ -134,7 +133,34 @@ def annotated_object_remover(annotations_path, processed_directory_path=os.path.
         for elem in to_remove:
             root.remove(elem)
 
-        tree.write(processed_directory_path + file)
+        tree.write(os.path.join(processed_directory_path, file))
+
+def find_average_object_sizes(annotations_path):
+    xml_files = get_all_files_from_directory(annotations_path, ".xml")
+
+    total_area = 0
+    total_height = 0
+    total_width = 0
+    total_objects = 0
+
+    for file in xml_files:
+        tree = ET.parse(os.path.join(annotations_path, file))
+        root = tree.getroot()
+
+        for elem in root.iter('object'):
+            for elem2 in elem:
+                if elem2.tag == 'bndbox':
+                    width = int(elem2[2].text) - int(elem2[0].text)
+                    height = int(elem2[3].text) - int(elem2[1].text)
+                    total_area += width * height
+                    total_height += height
+                    total_width += width
+            total_objects += 1
+
+    print("Average Area: " + str(total_area / total_objects))
+    print("Average Width: " + str(total_width / total_objects))
+    print("Average Height: " + str(total_height / total_objects))
+
 
 def generate_training_set(images_path, annotations_path, training_set=os.path.join("training_set/"), test_percentage=.1, labels=['bead']):
     if not os.path.exists(training_set):

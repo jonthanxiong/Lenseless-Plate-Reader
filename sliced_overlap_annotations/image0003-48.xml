@@ -1,0 +1,27 @@
+<annotation>
+	<filename>image0003-48.jpg</filename>
+	<folder>cells</folder>
+	<source>
+		<database>cells</database>
+		<annotation>custom</annotation>
+		<image>custom</image>
+	</source>
+	<size>
+		<width>652</width>
+		<height>411</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>bead</name>
+		<pose>unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>70</xmin>
+			<ymin>197</ymin>
+			<xmax>195</xmax>
+			<ymax>310</ymax>
+		</bndbox>
+	</object>
+	</annotation>
